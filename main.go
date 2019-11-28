@@ -5,19 +5,21 @@ import (
 	recordjar "github.com/Xuanwo/go-record-jar"
 )
 
-type File struct {
-	FileDate string         `json:"File-Date"`
-	Tags     []language.Tag `json:"Tags"`
+type Meta struct {
+	FileDate string `json:"File-Date"`
 }
 
 func main() {
 	data := recordjar.Parse(downloadFromIANA())
 
-	f := &File{}
-	f.FileDate = data[0]["File-Date"][0]
+	meta := &Meta{}
+	tags := make([]language.Tag, 0)
+
+	meta.FileDate = data[0]["File-Date"][0]
 	for _, v := range data[1:] {
-		f.Tags = append(f.Tags, parseRecordJar(v))
+		tags = append(tags, parseRecordJar(v))
 	}
 
-	writeIntoJSON(f)
+	writeIntoJSON(meta, tags)
+	writeIntoMinifiedJSON(meta, tags)
 }

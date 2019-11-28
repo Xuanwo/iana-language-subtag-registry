@@ -73,23 +73,41 @@ func parseRecordJar(m map[string][]string) (t language.Tag) {
 	return
 }
 
-func writeIntoJSON(f *File) {
-	content, err := json.Marshal(f)
+func writeIntoMinifiedJSON(m *Meta, t []language.Tag) {
+	content, err := json.Marshal(m)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = ioutil.WriteFile(path.Join("docs", "json", "meta.min.json"), content, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = ioutil.WriteFile(path.Join("docs", "language-subtag-registry.min.json"), content, 0644)
+	content, err = json.Marshal(t)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = ioutil.WriteFile(path.Join("docs", "json", "registry.min.json"), content, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func writeIntoJSON(m *Meta, t []language.Tag) {
+	content, err := json.MarshalIndent(m, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = ioutil.WriteFile(path.Join("docs", "json", "meta.json"), content, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	content, err = json.MarshalIndent(f, "", "  ")
+	content, err = json.MarshalIndent(t, "", "  ")
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	err = ioutil.WriteFile(path.Join("docs", "language-subtag-registry.json"), content, 0644)
+	err = ioutil.WriteFile(path.Join("docs", "json", "registry.json"), content, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
